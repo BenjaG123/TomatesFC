@@ -1,0 +1,291 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Oswald, sans-serif;
+}
+
+:root {
+    /* Font Size */
+    --font-size-s: 0.9rem;
+    --font-size-n: 1rem;
+    --font-size-m: 1.2rem;
+    --font-size-l: 1.5rem;
+    --font-size-xl: 2rem;
+    --font-size-xxl: 2.3rem;
+
+    /* Font Weight */
+    --font-weight-light: 200;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semi-bold: 600;
+    --font-weight-bold: 700;
+
+    /* Border Radius */
+    --border-radius-s: 8px;
+    --border-radius-m: 30px;
+    --border-radius-circle: 50%;
+
+    /* Colors */
+    --primary-color: #c02817;
+    --secondary-color: #ffcd51;
+    --white-color: #fff;
+    --dark-color: #252525;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    color: var(--secondary-color);
+    transition: 0.3s ease;
+}
+
+.logo {
+    flex: 1;
+}
+
+.logo a {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    display: flex;
+    align-items: center;
+}
+
+.logo img{
+    width: 80px;
+}
+
+.navbar .menu-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+}
+
+.navbar .social-link {
+    display: flex;
+    color: var(--white-color);
+    justify-content: center;
+    font-size: var(--font-size-l);
+    align-items: center;
+}
+
+.title {
+    text-align: center;
+    padding: 60px 0 60px;
+    color: var(--primary-color);
+    font-size: var(--font-size-xxl);
+}
+
+title::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: var(--secondary-color);
+    margin: 10px auto 0;
+}
+
+.defensas, .mediocampistas, .delanteros {
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.defensas-title, .mediocampistas-title, .delanteros-title {
+    text-align: center;
+    font-size: var(--font-size-xl);
+    margin-bottom: 50px;
+}
+
+/* Contenedor de las tarjetas */
+.player-cards {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Tarjeta individual de jugador */
+.player-card {
+    width: 250px;
+    background-color: #fff;
+    padding: 20px 15px;
+    border-radius: var(--border-radius-s);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.player-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Información dentro de la tarjeta */
+.player-info {
+    text-align: center;
+}
+
+.player-name {
+    font-size: var(--font-size-m);
+    padding: 10px 0;
+    border-radius: var(--border-radius-s);
+    background-color: var(--primary-color);
+    font-weight: var(--font-weight-medium);
+    color: var(--white-color);
+}
+
+.player-number {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .player-card {
+        width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .player-card {
+        width: 150px;
+    }
+}
+
+/* Estilos generales para el footer */
+.footer {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 20px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-logo img {
+    width: 50px;
+    height: 50px;
+}
+
+.footer-logo p {
+    font-size: var(--font-size-s);
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-link {
+    color: var(--white-color);
+    font-size: var(--font-size-l);
+    text-decoration: none;
+}
+
+.social-link:hover {
+    color: var(--secondary-color);
+    transition: 0.3s ease;
+}
+
+/* Estilos responsivos para el footer */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    .social-links {
+        justify-content: center;
+        gap: 10px;
+    }
+}
+
+/* Modal (Ventana emergente) */
+.player-modal {
+    display: none; /* Inicialmente está oculto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 40px; /* Aumentar el padding para un espacio extra alrededor del contenido */
+    border-radius: 20px; /* Bordes más redondeados */
+    display: flex;
+    max-width: 1200px; /* Ampliamos el tamaño máximo */
+    width: 90%; /* Ocupa el 90% del ancho de la pantalla */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Añadimos sombra para darle un toque más elegante */
+}
+
+.player-details {
+    display: flex;
+    gap: 30px; /* Mayor espacio entre la imagen y las estadísticas */
+    align-items: center;
+}
+
+#player-photo {
+    width: 250px; /* Aumentamos el tamaño de la imagen */
+    height: 300px; /* Ajustamos la altura de la imagen */
+    object-fit: contain;
+    border-radius: var(--border-radius-s);
+}
+
+.details-text {
+    max-width: 600px; /* Aumentamos el máximo ancho para las estadísticas */
+}
+
+.details-text p {
+    font-size: var(--font-size-n); /* Ajustamos el tamaño de las estadísticas */
+    margin-bottom: 10px; /* Añadimos algo de espacio entre cada estadística */
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2.5rem; /* Aumentamos el tamaño del botón de cierre */
+    cursor: pointer;
+}
+
+
+
