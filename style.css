@@ -257,6 +257,35 @@ title::after {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Añadimos sombra para darle un toque más elegante */
 }
 
+/* Ajustar el layout para pantallas pequeñas */
+@media (max-width: 768px) {
+    .modal-content {
+        flex-direction: column;
+        padding: 20px; /* Reducir el padding en móviles para más espacio */
+    }
+
+    .player-details {
+        flex-direction: column;
+        gap: 15px; /* Menos espacio entre la foto y las estadísticas */
+        align-items: center;
+    }
+
+    #player-photo {
+        width: 150px; /* Ajustar el tamaño de la imagen */
+        height: 180px; /* Ajustar la altura */
+    }
+
+    .details-text {
+        max-width: 100%; /* Permitir que las estadísticas ocupen todo el espacio disponible */
+        text-align: center; /* Centrar el texto */
+    }
+
+    .details-text p {
+        font-size: var(--font-size-s); /* Ajustar el tamaño de la fuente */
+    }
+}
+
+
 .player-details {
     display: flex;
     gap: 30px; /* Mayor espacio entre la imagen y las estadísticas */
