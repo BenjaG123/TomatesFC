@@ -177,7 +177,7 @@ title::after {
     color: var(--white-color);
     padding: 20px;
     text-align: center;
-    margin-top: 40px;
+    margin-top: 0;
 }
 
 .footer-content {
@@ -316,5 +316,89 @@ title::after {
     cursor: pointer;
 }
 
+
+/* Sección de opciones (Plantilla y Partidos) */
+#mainSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 90vh;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.half {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-size: cover;
+    background-position: center;
+}
+
+.left {
+    background-image: url('https://www.inn.cl/sites/default/files/field/image/4119.jpg');
+}
+
+.right {
+    background-image: url('https://img.freepik.com/foto-gratis/vista-campo-futbol-cesped_23-2150887305.jpg');
+}
+
+.content {
+    margin-top: 100px;
+    text-align: center;
+    z-index: 1;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.btn {
+    background-color: var(--primary-color);
+    text-decoration: none;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--secondary-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Variables de color */
+:root {
+    --primary-color: #c02817;
+    --secondary-color: #ffcd51;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    #mainSection {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .half {
+        height: 300px;
+    }
+
+    .content h2 {
+        font-size: 2rem;
+    }
+
+    .btn {
+        font-size: 1.2rem;
+    }
+}
 
 
