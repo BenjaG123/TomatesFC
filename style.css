@@ -451,3 +451,13 @@ h2 {
     font-size: var(--font-size-xxl);
     margin-bottom: 50px;
 }
+
+@media (max-width: 768px) {
+    .partido {
+        width: 90%;
+        margin-left: 5%;
+    }
+}
+
+
+
