@@ -7,6 +7,78 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="images/logo-png.png" type="image/png">
+    <!-- Conexión y carga de plantilla desde Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXTwAhkR8OkkbtEnU0gPuyF1Gb0Cl1t7M",
+            authDomain: "tomatesfc-1985b.firebaseapp.com",
+            projectId: "tomatesfc-1985b",
+            storageBucket: "tomatesfc-1985b.firebasestorage.app",
+            messagingSenderId: "193165132600",
+            appId: "1:193165132600:web:35ad067af6a0bcedeb37cd"
+        };
+
+        // Inicializar Firebase y Firestore
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Cargar jugadores desde la colección "jugadores"
+        async function cargarJugadores() {
+            const snapshot = await getDocs(collection(db, "jugadores"));
+            const jugadores = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            const defensasContenedor = document.querySelector(".defensas .player-cards");
+            const mediocampistasContenedor = document.querySelector(".mediocampistas .player-cards");
+            const delanterosContenedor = document.querySelector(".delanteros .player-cards");
+
+            defensasContenedor.innerHTML = "";
+            mediocampistasContenedor.innerHTML = "";
+            delanterosContenedor.innerHTML = "";
+
+            jugadores.forEach(jugador => {
+                const tarjeta = `
+        <div class="player-card" onclick="openPlayerDetails('${jugador.nombre}', '', ${jugador.partidos}, ${jugador.goles}, ${jugador.asistencias})">
+          <div class="player-number">${jugador.dorsal}</div>
+          <div class="player-info">
+            <h2 class="player-name">${jugador.nombre}</h2>
+          </div>
+        </div>
+      `;
+
+                const posicion = jugador.posicion?.toLowerCase();
+                if (["defensor", "defensores", "defensa"].includes(posicion)) {
+                    defensasContenedor.innerHTML += tarjeta;
+                } else if (["mediocampista", "mediocampistas"].includes(posicion)) {
+                    mediocampistasContenedor.innerHTML += tarjeta;
+                } else if (["delantero", "delanteros"].includes(posicion)) {
+                    delanterosContenedor.innerHTML += tarjeta;
+                }
+            });
+        }
+
+        cargarJugadores();
+    </script>
+
+    <!-- Función para mostrar detalles del jugador en modal -->
+    <script>
+        function openPlayerDetails(nombre, foto, partidos, goles, asistencias) {
+            document.getElementById("player-modal").style.display = "flex";
+            document.getElementById("player-photo").src = ""; // No mostramos la foto
+            document.getElementById("player-name").textContent = nombre;
+            document.getElementById("player-matches").textContent = partidos;
+            document.getElementById("player-goals").textContent = goles;
+            document.getElementById("player-assists").textContent = asistencias;
+        }
+
+        function closePlayerDetails(event) {
+            document.getElementById("player-modal").style.display = "none";
+        }
+    </script>
+
 </head>
 <body>
     <!-- Header -->
@@ -22,7 +94,7 @@
             </div>
         </nav>
     </header>
-    
+
     <!-- Defensas -->
     <section class="defensas">
         <div class="title"><h1>Plantilla del Equipo</h1></div>

@@ -1,84 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tomates FC | Sitio Oficial</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="images/logo-png.png" type="image/png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tomates FC | Partidos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="images/logo-png.png" type="image/png" />
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+        import {
+            getFirestore,
+            collection,
+            getDocs,
+            query,
+            orderBy,
+            addDoc,
+            doc,
+            updateDoc,
+            increment
+        } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXTwAhkR8OkkbtEnU0gPuyF1Gb0Cl1t7M",
+            authDomain: "tomatesfc-1985b.firebaseapp.com",
+            projectId: "tomatesfc-1985b",
+            storageBucket: "tomatesfc-1985b.firebasestorage.app",
+            messagingSenderId: "193165132600",
+            appId: "1:193165132600:web:35ad067af6a0bcedeb37cd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Cargar partidos y mostrarlos dinámicamente
+        async function cargarPartidos() {
+            const contenedor = document.querySelector(".partidos-container");
+            contenedor.innerHTML = ""; // limpio el contenedor
+
+            const q = query(collection(db, "partidos"), orderBy("fecha", "desc"));
+            const snapshot = await getDocs(q);
+
+            snapshot.forEach((doc) => {
+                const partido = doc.data();
+                contenedor.innerHTML += `
+          <div class="partido" onclick="verDetallesPartido('${doc.id}')">
+            <h3>${partido.fecha}</h3>
+            <p>${partido.resultado}</p>
+          </div>
+        `;
+            });
+        }
+
+        // Mostrar detalles del partido (placeholder)
+        window.verDetallesPartido = function(id) {
+            alert("Mostrar detalles del partido con id: " + id);
+        };
+
+        // Cargar jugadores para formulario (goles y asistencias)
+        async function cargarFormularioJugadores() {
+            const contenedor = document.getElementById("jugadores-estadisticas");
+            const snapshot = await getDocs(collection(db, "jugadores"));
+
+            snapshot.forEach((docSnap) => {
+                const jugador = docSnap.data();
+                const id = docSnap.id;
+
+                contenedor.innerHTML += `
+      <div class="jugador-linea">
+        <label>
+          <input type="checkbox" id="check-${id}" onchange="toggleStatsInputs('${id}')">
+          ${jugador.nombre}
+        </label>
+        <input type="number" placeholder="Goles" id="goles-${id}" min="0" disabled>
+        <input type="number" placeholder="Asistencias" id="asistencias-${id}" min="0" disabled>
+      </div>
+    `;
+            });
+        }
+
+        // Esta función activa/desactiva los inputs cuando el jugador está seleccionado
+        window.toggleStatsInputs = function(id) {
+            const check = document.getElementById(`check-${id}`);
+            document.getElementById(`goles-${id}`).disabled = !check.checked;
+            document.getElementById(`asistencias-${id}`).disabled = !check.checked;
+        };
+
+        // Guardar partido y actualizar estadísticas
+        async function guardarPartido(event) {
+            event.preventDefault();
+
+            const fecha = document.getElementById("fecha").value;
+            const resultado = document.getElementById("resultado").value;
+
+            if (!fecha || !resultado) {
+                alert("Por favor, completa fecha y resultado.");
+                return;
+            }
+
+            const snapshot = await getDocs(collection(db, "jugadores"));
+            const jugadoresEstadisticas = [];
+
+            for (const docu of snapshot.docs) {
+                const id = docu.id;
+                const jugadorData = docu.data();
+                const jugo = document.getElementById(`check-${id}`).checked;
+
+                if (!jugo) continue; // Si no jugó, lo ignoramos
+
+                const goles = parseInt(document.getElementById(`goles-${id}`).value) || 0;
+                const asistencias = parseInt(document.getElementById(`asistencias-${id}`).value) || 0;
+
+                jugadoresEstadisticas.push({
+                    idJugador: id,
+                    nombre: jugadorData.nombre,
+                    goles,
+                    asistencias
+                });
+
+                const jugadorRef = doc(db, "jugadores", id);
+                await updateDoc(jugadorRef, {
+                    partidos: increment(1),
+                    goles: increment(goles),
+                    asistencias: increment(asistencias)
+                });
+            }
+
+
+            await addDoc(collection(db, "partidos"), {
+                fecha,
+                resultado,
+                jugadores: jugadoresEstadisticas
+            });
+
+            alert("Partido guardado correctamente ✅");
+            document.getElementById("form-partido").reset();
+            cargarPartidos(); // recargo partidos para actualizar la lista
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            cargarPartidos();
+            cargarFormularioJugadores();
+            document.getElementById("form-partido").addEventListener("submit", guardarPartido);
+        });
+    </script>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <nav class="navbar">
-            <div class="logo">
-                <a href="index.html"><img src="images/logo.jpeg" alt="logo"> Tomates FC</a>
-            </div>
-            <div class="menu">
-                <ul class="menu-list">
-                    <li><a href="https://www.instagram.com/tomates._fc._/" target="_blank" class="social-link"><i class="fa-brands fa-instagram"></i></a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    
-    <!-- Partidos -->
-    <section class="partidos">
-        <h2 class="historial-title">Historial de Partidos</h2>
-        <div class="partidos-container">
-            <div class="partido">
-                <h3>20/01/2025</h3>
-                <p>Tomates FC 22 - 10 Vaqueros</p>
-            </div>
-            <div class="partido">
-                <h3>31/01/2025</h3>
-                <p>Tomates FC 19 vs 15 Vaqueros</p>
-            </div>
-            <div class="partido">
-                <h3>04/04/2025</h3>
-                <p>Tomates FC 4 vs 15 Manchester ICI</p>
-            </div>
-            <div class="partido">
-                <h3>01/05/2025</h3>
-                <p>Tomates FC 5 vs 15 Vaqueros</p>
-            </div>
-            <div class="partido">
-                <h3>09/05/2025</h3>
-                <p>Tomates FC 10 vs 8 Real Justicia</p>
-            </div>
-            <div class="partido">
-                <h3>24/05/2025</h3>
-                <p>Tomates FC 2 vs 15 Maradona Team</p>
-            </div>
-<div class="partido">
-                <h3>30/05/2025</h3>
-                <p>Tomates FC 9 vs 7 Real Justicia</p>
-            </div>
-<div class="partido">
-                <h3>27/06/2025</h3>
-                <p>Tomates FC 5 vs 5 Resistencia IC</p>
-            </div>
+<header>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="index.html"><img src="images/logo.jpeg" alt="logo" /> Tomates FC</a>
         </div>
-    </section>
-
-
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <img src="images/logo.jpeg" alt="Logo Tomates FC" width="50">
-                <p>Tomates FC &copy; 2025</p>
-            </div>
-            <div class="social-links">
-                <a href="https://www.instagram.com/tomates._fc._/" target="_blank" class="social-link">
-                    <i class="fa-brands fa-instagram"></i>
-                </a>
-            </div>
+        <div class="menu">
+            <ul class="menu-list">
+                <li>
+                    <a href="https://www.instagram.com/tomates._fc._/" target="_blank" class="social-link"
+                    ><i class="fa-brands fa-instagram"></i
+                    ></a>
+                </li>
+            </ul>
         </div>
-    </footer>
+    </nav>
+</header>
 
-    <script src="slider.js"></script>
+<section class="partidos">
+    <h2 class="historial-title">Historial de Partidos</h2>
+    <div class="partidos-container">
+        <!-- Aquí se cargan los partidos desde Firestore -->
+    </div>
+</section>
+
+<section class="form-agregar-partido" style="margin: 40px; max-width: 600px;">
+    <h2>Agregar Partido</h2>
+    <form id="form-partido">
+        <div>
+            <label>Fecha:</label><br />
+            <input type="date" id="fecha" required />
+        </div>
+        <div>
+            <label>Resultado:</label><br />
+            <input type="text" id="resultado" placeholder="Ej: Tomates FC 3 - 2 Rival" required />
+        </div>
+        <div id="jugadores-estadisticas" style="margin-top: 20px;">
+            <!-- Aquí se cargan inputs para goles y asistencias por jugador -->
+        </div>
+        <button type="submit" style="margin-top: 20px;">Guardar Partido</button>
+    </form>
+</section>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-logo">
+            <img src="images/logo.jpeg" alt="Logo Tomates FC" width="50" />
+            <p>Tomates FC &copy; 2025</p>
+        </div>
+        <div class="social-links">
+            <a href="https://www.instagram.com/tomates._fc._/" target="_blank" class="social-link"
+            ><i class="fa-brands fa-instagram"></i
+            ></a>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
